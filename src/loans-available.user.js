@@ -4,6 +4,7 @@
 // @version      0.2
 // @author       Bruno Bonanno
 // @match        https://lendy.co.uk/loans/available
+// @downloadURL  https://github.com/bbonanno/saving-stream-enhancer/raw/master/src/loans-available.user.js
 // @grant        none
 // @require      http://code.jquery.com/jquery-latest.min.js
 // @require      https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js
