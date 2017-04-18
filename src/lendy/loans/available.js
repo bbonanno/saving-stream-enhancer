@@ -1,52 +1,16 @@
-// ==UserScript==
-// @name         Loans Available
-// @namespace    https://github.com/bbonanno/saving-stream-enhancer
-// @version      0.4
-// @author       Bruno Bonanno
-// @match        https://lendy.co.uk/loans/available
-// @downloadURL  https://github.com/bbonanno/saving-stream-enhancer/raw/master/src/loans-available.user.js
-// @grant        none
-// @require      http://code.jquery.com/jquery-latest.min.js
-// @require      https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js
-// ==/UserScript==
-
 (function () {
     'use strict';
 
-    function numberOfDays(s) {
-        return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
-    }
-
-    function money(s) {
-        return parseFloat(s.replace('£', '').replace(',', '').trim());
-    }
-
-    function percentage(s) {
-        return parseInt(s.replace('%', '').trim());
-    }
-
-    function NumericParser(id, parser) {
-        return {
-            id: id,
-            is: function () {
-                return false;
-            },
-            format: function (s) {
-                if (s.trim().length > 0)
-                    return parser(s);
-                else
-                    return Number.MAX_SAFE_INTEGER;
-            },
-            type: 'numeric'
-        };
-    }
+    const $ = require("jquery");
+    require("tablesorter");
+    require('../../common.js');
 
     $.tablesorter.addParser(new NumericParser('days', numberOfDays));
     $.tablesorter.addParser(new NumericParser('money', money));
 
-    var table = $("table");
+    const table = $("table");
 
-    var
+    const
         ASSET_DETAILS = 0,
         DRAWNDOWN = 1,
         ASSET_ALUE = 2,
@@ -76,7 +40,7 @@
         sortList: [[ANNUAL_RETURN, DESCENDING], [REMAINING_TERM, DESCENDING], [AVAILABLE_TO_BUY, ASCENDING]]
     });
 
-    var additions = '<label for="remainingDaysEnabled">Remaining Days: </label> ' +
+    const additions = '<label for="remainingDaysEnabled">Remaining Days: </label> ' +
         '<input class="filter"  id="remainingDaysEnabled" type="checkbox" checked/> ' +
         '<input class="filter"  id="remainingDays" type="number" value="90"/> ' +
         '<label for="investedAmountEnabled">Invested Amount: </label> ' +
@@ -119,7 +83,7 @@
             .hide()
             .filter(
                 function () {
-                    var tds = $(this).find("td");
+                    const tds = $(this).find("td");
                     return filterNumberOfDays(tds) &&
                         filterInvestedAmount(tds) &&
                         filterAvailableAmount(tds);

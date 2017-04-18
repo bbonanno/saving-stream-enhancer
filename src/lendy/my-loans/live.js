@@ -1,49 +1,16 @@
-// ==UserScript==
-// @name         Loan Portfolio
-// @namespace    https://github.com/bbonanno/saving-stream-enhancer
-// @version      0.3
-// @author       Bruno Bonanno
-// @match        https://lendy.co.uk/my-loans/live
-// @match        https://lendy.co.uk/loans/live
-// @downloadURL  https://github.com/bbonanno/saving-stream-enhancer/raw/master/src/loan-portfolio.user.js
-// @grant        none
-// @require      http://code.jquery.com/jquery-latest.min.js
-// @require      https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js
-// ==/UserScript==
-
 (function () {
     'use strict';
 
-    function numberOfDays(s) {
-        return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
-    }
-
-    function money(s) {
-        return parseFloat(s.replace('£', '').replace(',', '').trim());
-    }
-
-    function NumericParser(id, parser) {
-        return {
-            id: id,
-            is: function () {
-                return false;
-            },
-            format: function (s) {
-                if (s.trim().length > 0)
-                    return parser(s);
-                else
-                    return Number.MAX_SAFE_INTEGER;
-            },
-            type: 'numeric'
-        };
-    }
+    const $ = require("jquery");
+    require("tablesorter");
+    require('../../common.js');
 
     $.tablesorter.addParser(new NumericParser('days', numberOfDays));
     $.tablesorter.addParser(new NumericParser('money', money));
 
-    var table = $("table");
+    const table = $("table");
 
-    var
+    const
         ASSET_DETAILS = 0,
         DRAWNDOWN = 1,
         REMAINING_TERM = 2,
@@ -66,7 +33,7 @@
         sortList: [[REMAINING_TERM, ASCENDING]]
     });
 
-    var additions = '<label for="sell">Sell: </label> ' +
+    const additions = '<label for="sell">Sell: </label> ' +
         '<input class="filter"  id="sell" type="number" value="60"/> ' +
         '<label for="caution">Caution: </label> ' +
         '<input class="filter"  id="caution" type="number" value="90"/> ' +
