@@ -4,13 +4,11 @@ const gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     rename = require('gulp-rename'),
     browserify = require('browserify'),
-    uglify = require('gulp-uglify'),
     glob = require('glob'),
     es = require('event-stream'),
     del = require('del'),
     wrapper = require('gulp-wrapper'),
     bufferify = require('vinyl-buffer'),
-    path = require('path'),
     pkg = require('./package.json'),
     babel = require('gulp-babel');
 
@@ -28,6 +26,8 @@ const header = file => {
         `// @match          https://lendy.co.uk/${fileName}`,
         '// @homepageURL    https://github.com/bbonanno/saving-stream-enhancer',
         `// @downloadURL    https://github.com/bbonanno/saving-stream-enhancer/raw/master/dist/lendy/${fileName}.user.js`,
+        '// @require        http://code.jquery.com/jquery-latest.min.js',
+        '// @require        https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js',
         '// ==/UserScript==',
         '\n'
     ].join('\n');
@@ -49,7 +49,6 @@ gulp.task('dist', ['clean'], function (done) {
                 .pipe(babel({
                     presets: ['es2015']
                 }))
-                // .pipe(uglify())
                 .pipe(wrapper({
                     header: header
                 }))

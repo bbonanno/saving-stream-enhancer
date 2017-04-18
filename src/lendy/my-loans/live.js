@@ -1,12 +1,10 @@
 (function () {
     'use strict';
 
-    const $ = require("jquery");
-    require("tablesorter");
-    require('../../common.js');
+    const util = require('../../util.js');
 
-    $.tablesorter.addParser(new NumericParser('days', numberOfDays));
-    $.tablesorter.addParser(new NumericParser('money', money));
+    $.tablesorter.addParser(new util.NumericParser('days', numberOfDays));
+    $.tablesorter.addParser(new util.NumericParser('money', money));
 
     const table = $("table");
 
@@ -50,11 +48,11 @@
             .css({'color': 'green', 'font-weight': 'bold'})
             .filter(
                 function () {
-                    return numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#caution").val(), 10);
+                    return util.numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#caution").val(), 10);
                 }).css({'color': 'orange'})
             .filter(
                 function () {
-                    return numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#sell").val(), 10);
+                    return util.numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#sell").val(), 10);
                 }).css({'color': 'red'});
 
         updateTotal();

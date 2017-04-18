@@ -1,12 +1,10 @@
 (function () {
     'use strict';
 
-    const $ = require("jquery");
-    require("tablesorter");
-    require('../../common.js');
+    const util = require('../../util.js');
 
-    $.tablesorter.addParser(new NumericParser('days', numberOfDays));
-    $.tablesorter.addParser(new NumericParser('money', money));
+    $.tablesorter.addParser(new util.NumericParser('days', numberOfDays));
+    $.tablesorter.addParser(new util.NumericParser('money', money));
 
     const table = $("table");
 
@@ -59,21 +57,21 @@
 
     function filterNumberOfDays(tds) {
         if ($('#remainingDaysEnabled:checked').length > 0) {
-            return numberOfDays($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
+            return util.numberOfDays($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
         }
         return true;
     }
 
     function filterInvestedAmount(tds) {
         if ($('#investedAmountEnabled:checked').length > 0) {
-            return money($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
+            return util.money($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
         }
         return true;
     }
 
     function filterAvailableAmount(tds) {
         if ($('#availableAmountEnabled:checked').length > 0) {
-            return money($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
+            return util.money($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
         }
         return true;
     }
@@ -90,7 +88,7 @@
                 }).show()
             .filter(
                 function () {
-                    return percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
+                    return util.percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
                 }).css('font-weight', 'bold');
 
         updateTotal();
