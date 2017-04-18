@@ -28,7 +28,7 @@
     $.tablesorter.addParser({
         // set a unique id
         id: 'days',
-        is: function (s) {
+        is: function () {
             // return false so this parser is not auto detected
             return false;
         },
