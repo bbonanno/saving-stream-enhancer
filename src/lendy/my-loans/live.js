@@ -3,8 +3,8 @@
 
     const util = require('../../util.js');
 
-    $.tablesorter.addParser(new util.NumericParser('days', numberOfDays));
-    $.tablesorter.addParser(new util.NumericParser('money', money));
+    $.tablesorter.addParser(new util.MoneyParser());
+    $.tablesorter.addParser(new util.DaysParser());
 
     const table = $("table");
 

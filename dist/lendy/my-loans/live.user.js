@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.6
-// @timestamp      2017-04-18T16:13:30.379Z
+// @version        0.8
+// @timestamp      2017-04-18T16:20:16.741Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -30,8 +30,8 @@
 
             var util = require('../../util.js');
 
-            $.tablesorter.addParser(new util.NumericParser('days', numberOfDays));
-            $.tablesorter.addParser(new util.NumericParser('money', money));
+            $.tablesorter.addParser(new util.MoneyParser());
+            $.tablesorter.addParser(new util.DaysParser());
 
             var table = $("table");
 
@@ -79,31 +79,45 @@
             filter();
         })();
     }, { "../../util.js": 2 }], 2: [function (require, module, exports) {
+        var NumericParser = function NumericParser(id, parser) {
+            return {
+                id: id,
+                is: function is() {
+                    return false;
+                },
+                format: function format(s) {
+                    if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
+                },
+                type: 'numeric'
+            };
+        };
+
+        var numberOfDays = function numberOfDays(s) {
+            return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
+        };
+
+        var money = function money(s) {
+            return parseFloat(s.replace('£', '').replace(',', '').trim());
+        };
+
+        var percentage = function percentage(s) {
+            return parseInt(s.replace('%', '').trim());
+        };
+
         module.exports = {
 
-            numberOfDays: function numberOfDays(s) {
-                return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
+            numberOfDays: numberOfDays,
+
+            money: money,
+
+            percentage: percentage,
+
+            MoneyParser: function MoneyParser() {
+                return new NumericParser('money', money);
             },
 
-            money: function money(s) {
-                return parseFloat(s.replace('£', '').replace(',', '').trim());
-            },
-
-            percentage: function percentage(s) {
-                return parseInt(s.replace('%', '').trim());
-            },
-
-            NumericParser: function NumericParser(id, parser) {
-                return {
-                    id: id,
-                    is: function is() {
-                        return false;
-                    },
-                    format: function format(s) {
-                        if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
-                    },
-                    type: 'numeric'
-                };
+            DaysParser: function DaysParser() {
+                return new NumericParser('days', money);
             }
         };
     }, {}] }, {}, [1]);
