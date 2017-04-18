@@ -25,7 +25,7 @@ const header = file => {
         `// @author         ${pkg.author}`,
         `// @match          https://lendy.co.uk/${fileName}`,
         '// @homepageURL    https://github.com/bbonanno/saving-stream-enhancer',
-        `// @downloadURL    https://github.com/bbonanno/saving-stream-enhancer/raw/master/dist/lendy/${fileName}.user.js`,
+        `// @downloadURL    https://raw.githubusercontent.com/bbonanno/saving-stream-enhancer/master/dist/lendy/${fileName}.user.js`,
         '// @require        http://code.jquery.com/jquery-latest.min.js',
         '// @require        https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js',
         '// ==/UserScript==',

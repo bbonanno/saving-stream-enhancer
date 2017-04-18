@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.11
-// @timestamp      2017-04-18T21:20:52.131Z
+// @version        0.12
+// @timestamp      2017-04-18T21:37:57.463Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
-// @downloadURL    https://github.com/bbonanno/saving-stream-enhancer/raw/master/dist/lendy/my-loans/live.user.js
+// @downloadURL    https://raw.githubusercontent.com/bbonanno/saving-stream-enhancer/master/dist/lendy/my-loans/live.user.js
 // @require        http://code.jquery.com/jquery-latest.min.js
 // @require        https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js
 // ==/UserScript==
