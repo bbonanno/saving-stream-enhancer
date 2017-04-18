@@ -1,9 +1,7 @@
 const NumericParser = (id, parser) => ({
     id: id,
-    is: function () {
-        return false;
-    },
-    format: function (s) {
+    is: () => false,
+    format: s => {
         if (s.trim().length > 0)
             return parser(s);
         else
@@ -12,21 +10,14 @@ const NumericParser = (id, parser) => ({
     type: 'numeric'
 });
 
-const numberOfDays = s => parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
+export const numberOfDays = s => parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
 
-const money = s => parseFloat(s.replace('£', '').replace(',', '').trim());
+export const money = s => parseFloat(s.replace('£', '').replace(',', '').trim());
 
-const percentage = s => parseInt(s.replace('%', '').trim());
+export const percentage = s => parseInt(s.replace('%', '').trim());
 
-module.exports = {
+export const moneyParser = new NumericParser('money', money);
 
-    numberOfDays: numberOfDays,
+export const daysParser = new NumericParser('days', numberOfDays);
 
-    money: money,
-
-    percentage: percentage,
-
-    MoneyParser: () => new NumericParser('money', money),
-
-    DaysParser: () => new NumericParser('days', money)
-};
+export const Header = (sorterId) => ({sorter: sorterId});

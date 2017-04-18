@@ -1,40 +1,29 @@
+import {moneyParser, daysParser, numberOfDays, money, percentage, Header} from '../../util.js';
+
 (function () {
     'use strict';
 
-    const util = require('../../util.js');
-
-    $.tablesorter.addParser(new util.MoneyParser());
-    $.tablesorter.addParser(new util.DaysParser());
+    $.tablesorter.addParser(moneyParser);
+    $.tablesorter.addParser(daysParser);
 
     const table = $("table");
 
     const
-        ASSET_DETAILS = 0,
-        DRAWNDOWN = 1,
-        ASSET_ALUE = 2,
-        LOAN = 3,
         ANNUAL_RETURN = 4,
-        LTV = 5,
         REMAINING_TERM = 6,
         INVESTED_AMOUNT = 7,
         AVAILABLE_TO_BUY = 8,
-        INTEREST_STATUS = 9,
         ASCENDING = 0,
         DESCENDING = 1
     ;
 
+    const headers = {};
+    headers[REMAINING_TERM] = new Header(daysParser.id);
+    headers[INVESTED_AMOUNT] = new Header(moneyParser.id);
+    headers[AVAILABLE_TO_BUY] = new Header(moneyParser.id);
+
     table.tablesorter({
-        headers: {
-            6: {
-                sorter: 'days'
-            },
-            7: {
-                sorter: 'money'
-            },
-            8: {
-                sorter: 'money'
-            }
-        },
+        headers: headers,
         sortList: [[ANNUAL_RETURN, DESCENDING], [REMAINING_TERM, DESCENDING], [AVAILABLE_TO_BUY, ASCENDING]]
     });
 
@@ -51,47 +40,39 @@
 
     table.before(additions);
 
-    function updateTotal() {
-        $('#totalLoans').text("Available: " + table.find("tbody tr:visible").length + " of " + table.find("tbody tr").length + " Loans");
-    }
-
-    function filterNumberOfDays(tds) {
+    const filterNumberOfDays = (tds) => {
         if ($('#remainingDaysEnabled:checked').length > 0) {
-            return util.numberOfDays($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
+            return numberOfDays($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
         }
         return true;
-    }
+    };
 
-    function filterInvestedAmount(tds) {
+    const filterInvestedAmount = (tds) => {
         if ($('#investedAmountEnabled:checked').length > 0) {
-            return util.money($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
+            return money($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
         }
         return true;
-    }
+    };
 
-    function filterAvailableAmount(tds) {
+    const filterAvailableAmount = (tds) => {
         if ($('#availableAmountEnabled:checked').length > 0) {
-            return util.money($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
+            return money($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
         }
         return true;
-    }
+    };
 
     function filter() {
         table.find("tbody tr")
             .hide()
-            .filter(
-                function () {
-                    const tds = $(this).find("td");
-                    return filterNumberOfDays(tds) &&
-                        filterInvestedAmount(tds) &&
-                        filterAvailableAmount(tds);
-                }).show()
-            .filter(
-                function () {
-                    return util.percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
-                }).css('font-weight', 'bold');
+            .filter(() => {
+                const tds = $(this).find("td");
+                return filterNumberOfDays(tds) && filterInvestedAmount(tds) && filterAvailableAmount(tds);
+            })
+            .show()
+            .filter(() => percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0)
+            .css('font-weight', 'bold');
 
-        updateTotal();
+        $('#totalLoans').text("Available: " + table.find("tbody tr:visible").length + " of " + table.find("tbody tr").length + " Loans");
     }
 
     $(".filter").change(filter);

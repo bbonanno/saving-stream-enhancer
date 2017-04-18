@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.9
-// @timestamp      2017-04-18T16:22:43.742Z
+// @version        0.10
+// @timestamp      2017-04-18T20:45:40.599Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -10,114 +10,93 @@
 // @require        https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js
 // ==/UserScript==
 
-"use strict";
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
-(function e(t, n, r) {
-    function s(o, u) {
-        if (!n[o]) {
-            if (!t[o]) {
-                var a = typeof require == "function" && require;if (!u && a) return a(o, !0);if (i) return i(o, !0);var f = new Error("Cannot find module '" + o + "'");throw f.code = "MODULE_NOT_FOUND", f;
-            }var l = n[o] = { exports: {} };t[o][0].call(l.exports, function (e) {
-                var n = t[o][1][e];return s(n ? n : e);
-            }, l, l.exports, e, t, n, r);
-        }return n[o].exports;
-    }var i = typeof require == "function" && require;for (var o = 0; o < r.length; o++) {
-        s(r[o]);
-    }return s;
-})({ 1: [function (require, module, exports) {
-        (function () {
-            'use strict';
+var _util = require('../../util.js');
 
-            var util = require('../../util.js');
+(function () {
+    'use strict';
 
-            $.tablesorter.addParser(new util.MoneyParser());
-            $.tablesorter.addParser(new util.DaysParser());
+    $.tablesorter.addParser(_util.moneyParser);
+    $.tablesorter.addParser(_util.daysParser);
 
-            var table = $("table");
+    var table = $("table");
 
-            var ASSET_DETAILS = 0,
-                DRAWNDOWN = 1,
-                REMAINING_TERM = 2,
-                INVESTED_AMOUNT = 7,
-                INTEREST = 8,
-                DETAILS = 9,
-                ASCENDING = 0,
-                DESCENDING = 1;
+    var REMAINING_TERM = 2,
+        INVESTED_AMOUNT = 3,
+        ASCENDING = 0;
 
-            table.tablesorter({
-                headers: {
-                    2: {
-                        sorter: 'days'
-                    },
-                    3: {
-                        sorter: 'money'
-                    }
-                },
-                sortList: [[REMAINING_TERM, ASCENDING]]
-            });
+    var headers = {};
+    headers[REMAINING_TERM] = new _util.Header(_util.daysParser.id);
+    headers[INVESTED_AMOUNT] = new _util.Header(_util.moneyParser.id);
 
-            var additions = '<label for="sell">Sell: </label> ' + '<input class="filter"  id="sell" type="number" value="60"/> ' + '<label for="caution">Caution: </label> ' + '<input class="filter"  id="caution" type="number" value="90"/> ' + '<label id="totalLoans"></label>';
+    table.tablesorter({
+        headers: headers,
+        sortList: [[REMAINING_TERM, ASCENDING]]
+    });
 
-            table.before(additions);
+    var additions = '<label for="sell">Sell: </label> ' + '<input class="filter"  id="sell" type="number" value="60"/> ' + '<label for="caution">Caution: </label> ' + '<input class="filter"  id="caution" type="number" value="90"/> ' + '<label id="totalLoans"></label>';
 
-            function updateTotal() {
-                $('#totalLoans').text("Holding " + table.find("tbody tr.js-loan-parts-table").length + " Loans");
-            }
+    table.before(additions);
 
-            function filter() {
-                table.find("tbody tr").css({ 'color': 'green', 'font-weight': 'bold' }).filter(function () {
-                    return util.numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#caution").val(), 10);
-                }).css({ 'color': 'orange' }).filter(function () {
-                    return util.numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#sell").val(), 10);
-                }).css({ 'color': 'red' });
+    function filter() {
+        var _this = this;
 
-                updateTotal();
-            }
+        var caution = parseInt($("#caution").val(), 10);
+        var sell = parseInt($("#sell").val(), 10);
 
-            $(".filter").change(filter);
+        table.find("tbody tr").css({ 'color': 'green', 'font-weight': 'bold' }).filter(function () {
+            return (0, _util.numberOfDays)($($(_this).find('td')[REMAINING_TERM]).text()) <= caution;
+        }).css({ 'color': 'orange' }).filter(function () {
+            return (0, _util.numberOfDays)($($(_this).find('td')[REMAINING_TERM]).text()) <= sell;
+        }).css({ 'color': 'red' });
 
-            filter();
-        })();
-    }, { "../../util.js": 2 }], 2: [function (require, module, exports) {
-        var NumericParser = function NumericParser(id, parser) {
-            return {
-                id: id,
-                is: function is() {
-                    return false;
-                },
-                format: function format(s) {
-                    if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
-                },
-                type: 'numeric'
-            };
-        };
+        $('#totalLoans').text("Holding " + table.find("tbody tr.js-loan-parts-table").length + " Loans");
+    }
 
-        var numberOfDays = function numberOfDays(s) {
-            return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
-        };
+    $(".filter").change(filter);
 
-        var money = function money(s) {
-            return parseFloat(s.replace('£', '').replace(',', '').trim());
-        };
+    filter();
+})();
 
-        var percentage = function percentage(s) {
-            return parseInt(s.replace('%', '').trim());
-        };
+},{"../../util.js":2}],2:[function(require,module,exports){
+'use strict';
 
-        module.exports = {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var NumericParser = function NumericParser(id, parser) {
+    return {
+        id: id,
+        is: function is() {
+            return false;
+        },
+        format: function format(s) {
+            if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
+        },
+        type: 'numeric'
+    };
+};
 
-            numberOfDays: numberOfDays,
+var numberOfDays = exports.numberOfDays = function numberOfDays(s) {
+    return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
+};
 
-            money: money,
+var money = exports.money = function money(s) {
+    return parseFloat(s.replace('£', '').replace(',', '').trim());
+};
 
-            percentage: percentage,
+var percentage = exports.percentage = function percentage(s) {
+    return parseInt(s.replace('%', '').trim());
+};
 
-            MoneyParser: function MoneyParser() {
-                return new NumericParser('money', money);
-            },
+var moneyParser = exports.moneyParser = new NumericParser('money', money);
 
-            DaysParser: function DaysParser() {
-                return new NumericParser('days', money);
-            }
-        };
-    }, {}] }, {}, [1]);
+var daysParser = exports.daysParser = new NumericParser('days', numberOfDays);
+
+var Header = exports.Header = function Header(sorterId) {
+    return { sorter: sorterId };
+};
+
+},{}]},{},[1]);

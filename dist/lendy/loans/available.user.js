@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => loans/available
-// @version        0.9
-// @timestamp      2017-04-18T16:22:43.795Z
+// @version        0.10
+// @timestamp      2017-04-18T20:45:40.632Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/loans/available
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -10,143 +10,116 @@
 // @require        https://raw.githubusercontent.com/christianbach/tablesorter/master/jquery.tablesorter.min.js
 // ==/UserScript==
 
-"use strict";
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
-(function e(t, n, r) {
-    function s(o, u) {
-        if (!n[o]) {
-            if (!t[o]) {
-                var a = typeof require == "function" && require;if (!u && a) return a(o, !0);if (i) return i(o, !0);var f = new Error("Cannot find module '" + o + "'");throw f.code = "MODULE_NOT_FOUND", f;
-            }var l = n[o] = { exports: {} };t[o][0].call(l.exports, function (e) {
-                var n = t[o][1][e];return s(n ? n : e);
-            }, l, l.exports, e, t, n, r);
-        }return n[o].exports;
-    }var i = typeof require == "function" && require;for (var o = 0; o < r.length; o++) {
-        s(r[o]);
-    }return s;
-})({ 1: [function (require, module, exports) {
-        (function () {
-            'use strict';
+var _util = require('../../util.js');
 
-            var util = require('../../util.js');
+(function () {
+    'use strict';
 
-            $.tablesorter.addParser(new util.MoneyParser());
-            $.tablesorter.addParser(new util.DaysParser());
+    $.tablesorter.addParser(_util.moneyParser);
+    $.tablesorter.addParser(_util.daysParser);
 
-            var table = $("table");
+    var table = $("table");
 
-            var ASSET_DETAILS = 0,
-                DRAWNDOWN = 1,
-                ASSET_ALUE = 2,
-                LOAN = 3,
-                ANNUAL_RETURN = 4,
-                LTV = 5,
-                REMAINING_TERM = 6,
-                INVESTED_AMOUNT = 7,
-                AVAILABLE_TO_BUY = 8,
-                INTEREST_STATUS = 9,
-                ASCENDING = 0,
-                DESCENDING = 1;
+    var ANNUAL_RETURN = 4,
+        REMAINING_TERM = 6,
+        INVESTED_AMOUNT = 7,
+        AVAILABLE_TO_BUY = 8,
+        ASCENDING = 0,
+        DESCENDING = 1;
 
-            table.tablesorter({
-                headers: {
-                    6: {
-                        sorter: 'days'
-                    },
-                    7: {
-                        sorter: 'money'
-                    },
-                    8: {
-                        sorter: 'money'
-                    }
-                },
-                sortList: [[ANNUAL_RETURN, DESCENDING], [REMAINING_TERM, DESCENDING], [AVAILABLE_TO_BUY, ASCENDING]]
-            });
+    var headers = {};
+    headers[REMAINING_TERM] = new _util.Header(_util.daysParser.id);
+    headers[INVESTED_AMOUNT] = new _util.Header(_util.moneyParser.id);
+    headers[AVAILABLE_TO_BUY] = new _util.Header(_util.moneyParser.id);
 
-            var additions = '<label for="remainingDaysEnabled">Remaining Days: </label> ' + '<input class="filter"  id="remainingDaysEnabled" type="checkbox" checked/> ' + '<input class="filter"  id="remainingDays" type="number" value="90"/> ' + '<label for="investedAmountEnabled">Invested Amount: </label> ' + '<input class="filter"  id="investedAmountEnabled" type="checkbox" checked/> ' + '<input class="filter"  id="investedAmount" type="number" value="0"/> ' + '<label for="availableAmountEnabled">Available Amount: </label> ' + '<input class="filter"  id="availableAmountEnabled" type="checkbox" checked/> ' + '<input class="filter"  id="availableAmount" type="number" value="50"/> ' + '<label id="totalLoans"></label>';
+    table.tablesorter({
+        headers: headers,
+        sortList: [[ANNUAL_RETURN, DESCENDING], [REMAINING_TERM, DESCENDING], [AVAILABLE_TO_BUY, ASCENDING]]
+    });
 
-            table.before(additions);
+    var additions = '<label for="remainingDaysEnabled">Remaining Days: </label> ' + '<input class="filter"  id="remainingDaysEnabled" type="checkbox" checked/> ' + '<input class="filter"  id="remainingDays" type="number" value="90"/> ' + '<label for="investedAmountEnabled">Invested Amount: </label> ' + '<input class="filter"  id="investedAmountEnabled" type="checkbox" checked/> ' + '<input class="filter"  id="investedAmount" type="number" value="0"/> ' + '<label for="availableAmountEnabled">Available Amount: </label> ' + '<input class="filter"  id="availableAmountEnabled" type="checkbox" checked/> ' + '<input class="filter"  id="availableAmount" type="number" value="50"/> ' + '<label id="totalLoans"></label>';
 
-            function updateTotal() {
-                $('#totalLoans').text("Available: " + table.find("tbody tr:visible").length + " of " + table.find("tbody tr").length + " Loans");
-            }
+    table.before(additions);
 
-            function filterNumberOfDays(tds) {
-                if ($('#remainingDaysEnabled:checked').length > 0) {
-                    return util.numberOfDays($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
-                }
-                return true;
-            }
+    var filterNumberOfDays = function filterNumberOfDays(tds) {
+        if ($('#remainingDaysEnabled:checked').length > 0) {
+            return (0, _util.numberOfDays)($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
+        }
+        return true;
+    };
 
-            function filterInvestedAmount(tds) {
-                if ($('#investedAmountEnabled:checked').length > 0) {
-                    return util.money($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
-                }
-                return true;
-            }
+    var filterInvestedAmount = function filterInvestedAmount(tds) {
+        if ($('#investedAmountEnabled:checked').length > 0) {
+            return (0, _util.money)($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
+        }
+        return true;
+    };
 
-            function filterAvailableAmount(tds) {
-                if ($('#availableAmountEnabled:checked').length > 0) {
-                    return util.money($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
-                }
-                return true;
-            }
+    var filterAvailableAmount = function filterAvailableAmount(tds) {
+        if ($('#availableAmountEnabled:checked').length > 0) {
+            return (0, _util.money)($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
+        }
+        return true;
+    };
 
-            function filter() {
-                table.find("tbody tr").hide().filter(function () {
-                    var tds = $(this).find("td");
-                    return filterNumberOfDays(tds) && filterInvestedAmount(tds) && filterAvailableAmount(tds);
-                }).show().filter(function () {
-                    return util.percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
-                }).css('font-weight', 'bold');
+    function filter() {
+        var _this = this;
 
-                updateTotal();
-            }
+        table.find("tbody tr").hide().filter(function () {
+            var tds = $(_this).find("td");
+            return filterNumberOfDays(tds) && filterInvestedAmount(tds) && filterAvailableAmount(tds);
+        }).show().filter(function () {
+            return (0, _util.percentage)($($(_this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
+        }).css('font-weight', 'bold');
 
-            $(".filter").change(filter);
+        $('#totalLoans').text("Available: " + table.find("tbody tr:visible").length + " of " + table.find("tbody tr").length + " Loans");
+    }
 
-            filter();
-        })();
-    }, { "../../util.js": 2 }], 2: [function (require, module, exports) {
-        var NumericParser = function NumericParser(id, parser) {
-            return {
-                id: id,
-                is: function is() {
-                    return false;
-                },
-                format: function format(s) {
-                    if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
-                },
-                type: 'numeric'
-            };
-        };
+    $(".filter").change(filter);
 
-        var numberOfDays = function numberOfDays(s) {
-            return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
-        };
+    filter();
+})();
 
-        var money = function money(s) {
-            return parseFloat(s.replace('£', '').replace(',', '').trim());
-        };
+},{"../../util.js":2}],2:[function(require,module,exports){
+'use strict';
 
-        var percentage = function percentage(s) {
-            return parseInt(s.replace('%', '').trim());
-        };
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var NumericParser = function NumericParser(id, parser) {
+    return {
+        id: id,
+        is: function is() {
+            return false;
+        },
+        format: function format(s) {
+            if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
+        },
+        type: 'numeric'
+    };
+};
 
-        module.exports = {
+var numberOfDays = exports.numberOfDays = function numberOfDays(s) {
+    return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
+};
 
-            numberOfDays: numberOfDays,
+var money = exports.money = function money(s) {
+    return parseFloat(s.replace('£', '').replace(',', '').trim());
+};
 
-            money: money,
+var percentage = exports.percentage = function percentage(s) {
+    return parseInt(s.replace('%', '').trim());
+};
 
-            percentage: percentage,
+var moneyParser = exports.moneyParser = new NumericParser('money', money);
 
-            MoneyParser: function MoneyParser() {
-                return new NumericParser('money', money);
-            },
+var daysParser = exports.daysParser = new NumericParser('days', numberOfDays);
 
-            DaysParser: function DaysParser() {
-                return new NumericParser('days', money);
-            }
-        };
-    }, {}] }, {}, [1]);
+var Header = exports.Header = function Header(sorterId) {
+    return { sorter: sorterId };
+};
+
+},{}]},{},[1]);

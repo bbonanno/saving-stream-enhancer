@@ -1,33 +1,24 @@
+import {moneyParser, daysParser, numberOfDays, Header} from '../../util.js';
+
 (function () {
     'use strict';
 
-    const util = require('../../util.js');
-
-    $.tablesorter.addParser(new util.MoneyParser());
-    $.tablesorter.addParser(new util.DaysParser());
+    $.tablesorter.addParser(moneyParser);
+    $.tablesorter.addParser(daysParser);
 
     const table = $("table");
 
     const
-        ASSET_DETAILS = 0,
-        DRAWNDOWN = 1,
         REMAINING_TERM = 2,
-        INVESTED_AMOUNT = 7,
-        INTEREST = 8,
-        DETAILS = 9,
-        ASCENDING = 0,
-        DESCENDING = 1
-    ;
+        INVESTED_AMOUNT = 3,
+        ASCENDING = 0;
+
+    const headers = {};
+    headers[REMAINING_TERM] = new Header(daysParser.id);
+    headers[INVESTED_AMOUNT] = new Header(moneyParser.id);
 
     table.tablesorter({
-        headers: {
-            2: {
-                sorter: 'days'
-            },
-            3: {
-                sorter: 'money'
-            }
-        },
+        headers: headers,
         sortList: [[REMAINING_TERM, ASCENDING]]
     });
 
@@ -39,23 +30,18 @@
 
     table.before(additions);
 
-    function updateTotal() {
-        $('#totalLoans').text("Holding " + table.find("tbody tr.js-loan-parts-table").length + " Loans");
-    }
-
     function filter() {
+        let caution = parseInt($("#caution").val(), 10);
+        let sell = parseInt($("#sell").val(), 10);
+
         table.find("tbody tr")
             .css({'color': 'green', 'font-weight': 'bold'})
-            .filter(
-                function () {
-                    return util.numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#caution").val(), 10);
-                }).css({'color': 'orange'})
-            .filter(
-                function () {
-                    return util.numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= parseInt($("#sell").val(), 10);
-                }).css({'color': 'red'});
+            .filter(() => numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= caution)
+            .css({'color': 'orange'})
+            .filter(() => numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= sell)
+            .css({'color': 'red'});
 
-        updateTotal();
+        $('#totalLoans').text("Holding " + table.find("tbody tr.js-loan-parts-table").length + " Loans");
     }
 
     $(".filter").change(filter);

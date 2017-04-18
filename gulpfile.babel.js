@@ -10,7 +10,7 @@ const gulp = require('gulp'),
     wrapper = require('gulp-wrapper'),
     bufferify = require('vinyl-buffer'),
     pkg = require('./package.json'),
-    babel = require('gulp-babel');
+    babelify = require('babelify');
 
 const distFolder = './dist';
 
@@ -43,12 +43,10 @@ gulp.task('dist', ['clean'], function (done) {
 
         const tasks = files.map(function (entry) {
             return browserify({entries: [entry]})
+                .transform('babelify', {presets: ['es2015']})
                 .bundle()
                 .pipe(source(entry))
                 .pipe(bufferify())
-                .pipe(babel({
-                    presets: ['es2015']
-                }))
                 .pipe(wrapper({
                     header: header
                 }))
