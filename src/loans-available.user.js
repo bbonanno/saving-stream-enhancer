@@ -38,7 +38,7 @@
                     return Number.MAX_SAFE_INTEGER;
             },
             type: 'numeric'
-        }
+        };
     }
 
     $.tablesorter.addParser(new NumericParser('days', numberOfDays));
