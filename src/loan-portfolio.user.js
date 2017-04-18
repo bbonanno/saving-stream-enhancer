@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Loan Portfolio
 // @namespace    https://github.com/bbonanno/
-// @version      0.1
+// @version      0.1.1
 // @author       Bruno Bonanno
 // @match        https://lendy.co.uk/my-loans/live
 // @match        https://lendy.co.uk/loans/live
@@ -63,7 +63,7 @@
                 sorter: 'money'
             }
         },
-        sortList: [[REMAINING_TERM, DESCENDING]]
+        sortList: [[REMAINING_TERM, ASCENDING]]
     });
 
     var additions = '<label for="sell">Sell: </label> ' +
