@@ -1,8 +1,6 @@
 import {moneyParser, daysParser, numberOfDays, Header} from '../../util.js';
 
 (function () {
-    'use strict';
-
     $.tablesorter.addParser(moneyParser);
     $.tablesorter.addParser(daysParser);
 
@@ -36,9 +34,13 @@ import {moneyParser, daysParser, numberOfDays, Header} from '../../util.js';
 
         table.find("tbody tr")
             .css({'color': 'green', 'font-weight': 'bold'})
-            .filter(() => numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= caution)
+            .filter(function () {
+                return numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= caution
+            })
             .css({'color': 'orange'})
-            .filter(() => numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= sell)
+            .filter(function () {
+                return numberOfDays($($(this).find('td')[REMAINING_TERM]).text()) <= sell
+            })
             .css({'color': 'red'});
 
         $('#totalLoans').text("Holding " + table.find("tbody tr.js-loan-parts-table").length + " Loans");

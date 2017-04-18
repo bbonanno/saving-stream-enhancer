@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.10
-// @timestamp      2017-04-18T20:45:40.599Z
+// @version        0.11
+// @timestamp      2017-04-18T21:20:52.131Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -16,8 +16,6 @@
 var _util = require('../../util.js');
 
 (function () {
-    'use strict';
-
     $.tablesorter.addParser(_util.moneyParser);
     $.tablesorter.addParser(_util.daysParser);
 
@@ -41,15 +39,13 @@ var _util = require('../../util.js');
     table.before(additions);
 
     function filter() {
-        var _this = this;
-
         var caution = parseInt($("#caution").val(), 10);
         var sell = parseInt($("#sell").val(), 10);
 
         table.find("tbody tr").css({ 'color': 'green', 'font-weight': 'bold' }).filter(function () {
-            return (0, _util.numberOfDays)($($(_this).find('td')[REMAINING_TERM]).text()) <= caution;
+            return (0, _util.numberOfDays)($($(this).find('td')[REMAINING_TERM]).text()) <= caution;
         }).css({ 'color': 'orange' }).filter(function () {
-            return (0, _util.numberOfDays)($($(_this).find('td')[REMAINING_TERM]).text()) <= sell;
+            return (0, _util.numberOfDays)($($(this).find('td')[REMAINING_TERM]).text()) <= sell;
         }).css({ 'color': 'red' });
 
         $('#totalLoans').text("Holding " + table.find("tbody tr.js-loan-parts-table").length + " Loans");

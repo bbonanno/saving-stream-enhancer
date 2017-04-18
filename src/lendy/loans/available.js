@@ -1,8 +1,6 @@
 import {moneyParser, daysParser, numberOfDays, money, percentage, Header} from '../../util.js';
 
 (function () {
-    'use strict';
-
     $.tablesorter.addParser(moneyParser);
     $.tablesorter.addParser(daysParser);
 
@@ -64,12 +62,14 @@ import {moneyParser, daysParser, numberOfDays, money, percentage, Header} from '
     function filter() {
         table.find("tbody tr")
             .hide()
-            .filter(() => {
+            .filter(function () {
                 const tds = $(this).find("td");
                 return filterNumberOfDays(tds) && filterInvestedAmount(tds) && filterAvailableAmount(tds);
             })
             .show()
-            .filter(() => percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0)
+            .filter(function () {
+                return percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0
+            })
             .css('font-weight', 'bold');
 
         $('#totalLoans').text("Available: " + table.find("tbody tr:visible").length + " of " + table.find("tbody tr").length + " Loans");

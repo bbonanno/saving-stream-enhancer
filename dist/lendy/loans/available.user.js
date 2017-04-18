@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => loans/available
-// @version        0.10
-// @timestamp      2017-04-18T20:45:40.632Z
+// @version        0.11
+// @timestamp      2017-04-18T21:20:52.169Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/loans/available
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -16,8 +16,6 @@
 var _util = require('../../util.js');
 
 (function () {
-    'use strict';
-
     $.tablesorter.addParser(_util.moneyParser);
     $.tablesorter.addParser(_util.daysParser);
 
@@ -66,13 +64,11 @@ var _util = require('../../util.js');
     };
 
     function filter() {
-        var _this = this;
-
         table.find("tbody tr").hide().filter(function () {
-            var tds = $(_this).find("td");
+            var tds = $(this).find("td");
             return filterNumberOfDays(tds) && filterInvestedAmount(tds) && filterAvailableAmount(tds);
         }).show().filter(function () {
-            return (0, _util.percentage)($($(_this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
+            return (0, _util.percentage)($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
         }).css('font-weight', 'bold');
 
         $('#totalLoans').text("Available: " + table.find("tbody tr:visible").length + " of " + table.find("tbody tr").length + " Loans");
