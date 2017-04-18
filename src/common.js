@@ -1,17 +1,12 @@
-function numberOfDays(s) {
-    return parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim());
-}
+module.exports = {
 
-function money(s) {
-    return parseFloat(s.replace('£', '').replace(',', '').trim());
-}
+    numberOfDays: s => parseInt(s.toLowerCase().replace('days', '').replace('day', '').trim()),
 
-function percentage(s) {
-    return parseInt(s.replace('%', '').trim());
-}
+    money: s => parseFloat(s.replace('£', '').replace(',', '').trim()),
 
-function NumericParser(id, parser) {
-    return {
+    percentage: s => parseInt(s.replace('%', '').trim()),
+
+    NumericParser: (id, parser) => ({
         id: id,
         is: function () {
             return false;
@@ -23,5 +18,5 @@ function NumericParser(id, parser) {
                 return Number.MAX_SAFE_INTEGER;
         },
         type: 'numeric'
-    };
-}
+    })
+};

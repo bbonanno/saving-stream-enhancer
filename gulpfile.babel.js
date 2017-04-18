@@ -49,7 +49,7 @@ gulp.task('dist', ['clean'], function (done) {
                 .pipe(babel({
                     presets: ['es2015']
                 }))
-                .pipe(uglify())
+                // .pipe(uglify())
                 .pipe(wrapper({
                     header: header
                 }))
