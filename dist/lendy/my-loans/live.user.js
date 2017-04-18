@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.12
-// @timestamp      2017-04-18T21:37:57.463Z
+// @version        0.13
+// @timestamp      2017-04-18T22:28:01.104Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -16,10 +16,16 @@
 var _util = require('../../util.js');
 
 (function () {
-    $.tablesorter.addParser(_util.moneyParser);
-    $.tablesorter.addParser(_util.daysParser);
 
     var table = $("table");
+    var tbody = table.find('tbody');
+    var footerRow = tbody.find('tr:last-child');
+    footerRow.remove();
+    table.append('<tfoot></tfoot>');
+    table.find('tfoot').append(footerRow);
+
+    $.tablesorter.addParser(_util.moneyParser);
+    $.tablesorter.addParser(_util.daysParser);
 
     var REMAINING_TERM = 2,
         INVESTED_AMOUNT = 3,
@@ -69,7 +75,7 @@ var NumericParser = function NumericParser(id, parser) {
             return false;
         },
         format: function format(s) {
-            if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
+            return parser(s);
         },
         type: 'numeric'
     };

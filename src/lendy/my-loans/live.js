@@ -1,10 +1,16 @@
 import {moneyParser, daysParser, numberOfDays, Header} from '../../util.js';
 
 (function () {
-    $.tablesorter.addParser(moneyParser);
-    $.tablesorter.addParser(daysParser);
 
     const table = $("table");
+    const tbody =  table.find('tbody');
+    const footerRow = tbody.find('tr:last-child');
+    footerRow.remove();
+    table.append('<tfoot></tfoot>');
+    table.find('tfoot').append(footerRow);
+
+    $.tablesorter.addParser(moneyParser);
+    $.tablesorter.addParser(daysParser);
 
     const
         REMAINING_TERM = 2,
@@ -49,4 +55,5 @@ import {moneyParser, daysParser, numberOfDays, Header} from '../../util.js';
     $(".filter").change(filter);
 
     filter();
+
 })();

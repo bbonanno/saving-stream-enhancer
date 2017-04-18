@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => loans/available
-// @version        0.12
-// @timestamp      2017-04-18T21:37:57.429Z
+// @version        0.13
+// @timestamp      2017-04-18T22:28:01.067Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/loans/available
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -16,6 +16,7 @@
 var _util = require('../../util.js');
 
 (function () {
+
     $.tablesorter.addParser(_util.moneyParser);
     $.tablesorter.addParser(_util.daysParser);
 
@@ -92,7 +93,7 @@ var NumericParser = function NumericParser(id, parser) {
             return false;
         },
         format: function format(s) {
-            if (s.trim().length > 0) return parser(s);else return Number.MAX_SAFE_INTEGER;
+            return parser(s);
         },
         type: 'numeric'
     };

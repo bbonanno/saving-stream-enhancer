@@ -1,6 +1,7 @@
 import {moneyParser, daysParser, numberOfDays, money, percentage, Header} from '../../util.js';
 
 (function () {
+
     $.tablesorter.addParser(moneyParser);
     $.tablesorter.addParser(daysParser);
 
