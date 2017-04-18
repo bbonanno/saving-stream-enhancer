@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Loans Available
 // @namespace    https://github.com/bbonanno/
-// @version      0.1
+// @version      0.2
 // @author       Bruno Bonanno
 // @match        https://lendy.co.uk/loans/available
 // @grant        none
