@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Loan Portfolio
-// @namespace    https://github.com/bbonanno/
-// @version      0.2
+// @namespace    https://github.com/bbonanno/saving-stream-enhancer
+// @version      0.3
 // @author       Bruno Bonanno
 // @match        https://lendy.co.uk/my-loans/live
 // @match        https://lendy.co.uk/loans/live

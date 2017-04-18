@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Loans Available
-// @namespace    https://github.com/bbonanno/
-// @version      0.3
+// @namespace    https://github.com/bbonanno/saving-stream-enhancer
+// @version      0.4
 // @author       Bruno Bonanno
 // @match        https://lendy.co.uk/loans/available
 // @downloadURL  https://github.com/bbonanno/saving-stream-enhancer/raw/master/src/loans-available.user.js
