@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Loans Available
 // @namespace    https://github.com/bbonanno/
-// @version      0.2
+// @version      0.3
 // @author       Bruno Bonanno
 // @match        https://lendy.co.uk/loans/available
 // @downloadURL  https://github.com/bbonanno/saving-stream-enhancer/raw/master/src/loans-available.user.js
@@ -25,36 +25,56 @@
         return parseInt(s.replace('%', '').trim());
     }
 
-    // add parser through the tablesorter addParser method
-    $.tablesorter.addParser({
-        // set a unique id
-        id: 'days',
-        is: function () {
-            // return false so this parser is not auto detected
-            return false;
-        },
-        format: function (s) {
-            // format your data for normalization
-            if (s.trim().length > 0)
-                return numberOfDays(s);
-            else
-                return Number.MAX_SAFE_INTEGER;
-        },
-        // set type, either numeric or text
-        type: 'numeric'
-    });
+    function NumericParser(id, parser) {
+        return {
+            id: id,
+            is: function () {
+                return false;
+            },
+            format: function (s) {
+                if (s.trim().length > 0)
+                    return parser(s);
+                else
+                    return Number.MAX_SAFE_INTEGER;
+            },
+            type: 'numeric'
+        }
+    }
+
+    $.tablesorter.addParser(new NumericParser('days', numberOfDays));
+    $.tablesorter.addParser(new NumericParser('money', money));
 
     var table = $("table");
+
+    var
+        ASSET_DETAILS = 0,
+        DRAWNDOWN = 1,
+        ASSET_ALUE = 2,
+        LOAN = 3,
+        ANNUAL_RETURN = 4,
+        LTV = 5,
+        REMAINING_TERM = 6,
+        INVESTED_AMOUNT = 7,
+        AVAILABLE_TO_BUY = 8,
+        INTEREST_STATUS = 9,
+        ASCENDING = 0,
+        DESCENDING = 1
+    ;
 
     table.tablesorter({
         headers: {
             6: {
                 sorter: 'days'
+            },
+            7: {
+                sorter: 'money'
+            },
+            8: {
+                sorter: 'money'
             }
         },
-        sortList: [[4, 1], [7, 0], [6, 1], [8, 1]]
+        sortList: [[ANNUAL_RETURN, DESCENDING], [REMAINING_TERM, DESCENDING], [AVAILABLE_TO_BUY, ASCENDING]]
     });
-
 
     var additions = '<label for="remainingDaysEnabled">Remaining Days: </label> ' +
         '<input class="filter"  id="remainingDaysEnabled" type="checkbox" checked/> ' +
@@ -75,21 +95,21 @@
 
     function filterNumberOfDays(tds) {
         if ($('#remainingDaysEnabled:checked').length > 0) {
-            return numberOfDays($(tds[6]).text()) >= parseInt($("#remainingDays").val(), 10);
+            return numberOfDays($(tds[REMAINING_TERM]).text()) >= parseInt($("#remainingDays").val(), 10);
         }
         return true;
     }
 
     function filterInvestedAmount(tds) {
         if ($('#investedAmountEnabled:checked').length > 0) {
-            return money($(tds[7]).text()) <= parseInt($("#investedAmount").val(), 10);
+            return money($(tds[INVESTED_AMOUNT]).text()) <= parseInt($("#investedAmount").val(), 10);
         }
         return true;
     }
 
     function filterAvailableAmount(tds) {
         if ($('#availableAmountEnabled:checked').length > 0) {
-            return money($(tds[8]).text()) >= parseInt($("#availableAmount").val(), 10);
+            return money($(tds[AVAILABLE_TO_BUY]).text()) >= parseInt($("#availableAmount").val(), 10);
         }
         return true;
     }
@@ -106,7 +126,7 @@
                 }).show()
             .filter(
                 function () {
-                    return percentage($($(this).find('td')[4]).text()) % 2 === 0;
+                    return percentage($($(this).find('td')[ANNUAL_RETURN]).text()) % 2 === 0;
                 }).css('font-weight', 'bold');
 
         updateTotal();
