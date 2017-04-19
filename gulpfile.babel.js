@@ -10,9 +10,11 @@ const gulp = require('gulp'),
     wrapper = require('gulp-wrapper'),
     bufferify = require('vinyl-buffer'),
     pkg = require('./package.json'),
+    bump = require('gulp-bump'),
     babelify = require('babelify');
 
 const distFolder = './dist';
+const sourceFiles = './src/lendy/**/*.js';
 
 const header = file => {
     const fileName = file.path.replace(__dirname, '').replace('/src/lendy/', '').replace('.js', '');
@@ -37,8 +39,8 @@ gulp.task('clean', function (cb) {
     return del([distFolder], cb);
 });
 
-gulp.task('dist', ['clean'], function (done) {
-    glob('./src/lendy/**/*.js', function (err, files) {
+gulp.task('dist', ['clean', 'bump'], function (done) {
+    glob(sourceFiles, function (err, files) {
         if (err) done(err);
 
         const tasks = files.map(function (entry) {
@@ -61,3 +63,13 @@ gulp.task('dist', ['clean'], function (done) {
 });
 
 gulp.task('default', ['dist']);
+
+gulp.task('watch', function () {
+    gulp.watch(sourceFiles, ['dist']);
+});
+
+gulp.task('bump', function () {
+    gulp.src('./package.json')
+        .pipe(bump())
+        .pipe(gulp.dest('./'));
+});
