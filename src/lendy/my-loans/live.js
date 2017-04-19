@@ -8,6 +8,7 @@ import {moneyParser, daysParser, numberOfDays, Header} from '../../util.js';
     footerRow.remove();
     table.append('<tfoot></tfoot>');
     table.find('tfoot').append(footerRow);
+    footerRow.css({'font-weight': 'bold', 'font-size': '16pt'});
 
     $.tablesorter.addParser(moneyParser);
     $.tablesorter.addParser(daysParser);

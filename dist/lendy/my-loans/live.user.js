@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.14
-// @timestamp      2017-04-18T22:38:59.543Z
+// @version        0.15
+// @timestamp      2017-04-19T09:31:00.852Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -23,6 +23,7 @@ var _util = require('../../util.js');
     footerRow.remove();
     table.append('<tfoot></tfoot>');
     table.find('tfoot').append(footerRow);
+    footerRow.css({ 'font-weight': 'bold', 'font-size': '16pt' });
 
     $.tablesorter.addParser(_util.moneyParser);
     $.tablesorter.addParser(_util.daysParser);
