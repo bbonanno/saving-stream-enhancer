@@ -9,7 +9,6 @@ const gulp = require('gulp'),
     del = require('del'),
     wrapper = require('gulp-wrapper'),
     bufferify = require('vinyl-buffer'),
-    pkg = require('./package.json'),
     bump = require('gulp-bump'),
     babelify = require('babelify');
 
@@ -18,6 +17,8 @@ const sourceFiles = './src/lendy/**/*.js';
 
 const header = file => {
     const fileName = file.path.replace(__dirname, '').replace('/src/lendy/', '').replace('.js', '');
+
+    const pkg = require('./package.json');
 
     return [
         '// ==UserScript==',

@@ -15,10 +15,12 @@
     "babelify": "^7.3.0",
     "browserify": "^14.3.0",
     "del": "^2.2.2",
+    "event-stream": "^3.3.4",
     "gulp": "latest",
+    "gulp-bump": "^2.7.0",
     "gulp-rename": "^1.2.2",
     "gulp-wrapper": "^1.0.0",
-    "gulp-bump": "^2.7.0",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
 }
