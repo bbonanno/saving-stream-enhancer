@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => loans/available
-// @version        0.15
-// @timestamp      2017-04-19T09:31:00.827Z
+// @version        0.16.5
+// @timestamp      2017-05-18T14:37:02.496Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/loans/available
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => my-loans/live
-// @version        0.15
-// @timestamp      2017-04-19T09:31:00.852Z
+// @version        0.16.5
+// @timestamp      2017-05-18T14:37:02.526Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/my-loans/live
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -41,7 +41,7 @@ var _util = require('../../util.js');
         sortList: [[REMAINING_TERM, ASCENDING]]
     });
 
-    var additions = '<label for="sell">Sell: </label> ' + '<input class="filter"  id="sell" type="number" value="60"/> ' + '<label for="caution">Caution: </label> ' + '<input class="filter"  id="caution" type="number" value="90"/> ' + '<label id="totalLoans"></label>';
+    var additions = '<label for="sell">Sell: </label> ' + '<input class="filter"  id="sell" type="number" value="60"/> ' + '<label for="caution">Caution: </label> ' + '<input class="filter"  id="caution" type="number" value="90"/> ' + '<label id="totalLoans"></label>' + '<p style="font-weight: bold;" id="balancedInterest"></p>';
 
     table.before(additions);
 
@@ -49,7 +49,7 @@ var _util = require('../../util.js');
         var caution = parseInt($("#caution").val(), 10);
         var sell = parseInt($("#sell").val(), 10);
 
-        table.find("tbody tr").css({ 'color': 'green', 'font-weight': 'bold' }).filter(function () {
+        table.find("tbody tr.js-loan-parts-table").css({ 'color': 'green', 'font-weight': 'bold' }).filter(function () {
             return (0, _util.numberOfDays)($($(this).find('td')[REMAINING_TERM]).text()) <= caution;
         }).css({ 'color': 'orange' }).filter(function () {
             return (0, _util.numberOfDays)($($(this).find('td')[REMAINING_TERM]).text()) <= sell;
@@ -61,6 +61,26 @@ var _util = require('../../util.js');
     $(".filter").change(filter);
 
     filter();
+
+    $.fn.reduce = [].reduce;
+    $.get('https://lendy.co.uk/_fragments/Loan/UserLoanParts', function (data) {
+        var rows = $(data).find('tbody tr');
+        var interest = rows.map(function (i, r) {
+            var columns = $(r).find('td');
+            return (0, _util.money)($(columns[3]).text()) * (0, _util.percentage)($(columns[5]).text()) / 100;
+        }).reduce(function (acc, cur) {
+            return acc + cur;
+        }, 0);
+
+        var total = rows.map(function (i, r) {
+            var columns = $(r).find('td');
+            return (0, _util.money)($(columns[3]).text());
+        }).reduce(function (acc, cur) {
+            return acc + cur;
+        }, 0);
+
+        $('#balancedInterest').text('Balanced interest: ' + Math.round(interest / total * 10000) / 100 + '%');
+    });
 })();
 
 },{"../../util.js":2}],2:[function(require,module,exports){
