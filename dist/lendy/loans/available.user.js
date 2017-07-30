@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Saving-Stream-Enhancer => loans/available
-// @version        0.16.5
-// @timestamp      2017-05-18T14:37:02.496Z
+// @version        0.16.7
+// @timestamp      2017-07-30T21:03:15.773Z
 // @author         Bruno Bonanno
 // @match          https://lendy.co.uk/loans/available
 // @homepageURL    https://github.com/bbonanno/saving-stream-enhancer
@@ -23,9 +23,9 @@ var _util = require('../../util.js');
     var table = $("table");
 
     var ANNUAL_RETURN = 4,
-        REMAINING_TERM = 6,
-        INVESTED_AMOUNT = 7,
-        AVAILABLE_TO_BUY = 8,
+        REMAINING_TERM = 7,
+        INVESTED_AMOUNT = 8,
+        AVAILABLE_TO_BUY = 9,
         ASCENDING = 0,
         DESCENDING = 1;
 

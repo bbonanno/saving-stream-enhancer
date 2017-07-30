@@ -9,9 +9,9 @@ import {moneyParser, daysParser, numberOfDays, money, percentage, Header} from '
 
     const
         ANNUAL_RETURN = 4,
-        REMAINING_TERM = 6,
-        INVESTED_AMOUNT = 7,
-        AVAILABLE_TO_BUY = 8,
+        REMAINING_TERM = 7,
+        INVESTED_AMOUNT = 8,
+        AVAILABLE_TO_BUY = 9,
         ASCENDING = 0,
         DESCENDING = 1
     ;
